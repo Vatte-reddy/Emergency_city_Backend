@@ -15,7 +15,7 @@ const createToken = (userId) => {
     return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'secretKey', { expiresIn: '1d' });
 };
 
-authRouter.post('/signup',async (req,res)=>{
+authRouter.post('/signup', async (req,res)=>{
    
     try{
         
