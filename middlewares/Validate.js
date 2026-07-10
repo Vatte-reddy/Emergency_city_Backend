@@ -48,3 +48,12 @@ export const validateEdit = (req) => {
         throw new Error("Invalid operation");
     }
 };
+
+export const ValidateEmergencyUnit = (req) => {
+
+    const allowedFields = ["Police", "Fire", "Ambulance", "Hospital", "Disaster"];
+
+    if (!allowedFields.includes(req.body.type)) {
+        throw new Error("Invalid emergency unit type");
+    }
+};

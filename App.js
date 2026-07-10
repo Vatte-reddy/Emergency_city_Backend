@@ -31,6 +31,14 @@ import authRoutes from './routes/authRoutes.js'
 
 app.use('/',authRoutes)
 
+import incidentRoutes from './routes/incidentRoutes.js'
+
+app.use('/',incidentRoutes)
+
+import unitRoutes from './routes/unitRoutes.js'
+
+app.use('/',unitRoutes)
+
 const port=process.env.ENV_PORT || 1818
 
 

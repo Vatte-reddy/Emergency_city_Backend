@@ -6,14 +6,14 @@ import Incident from "../models/Incident.js";
 
  import userAuth from "../middlewares/userAuth.js";
 
-import validate from "../middlewares/Validate.js";
+import {validate} from "../middlewares/Validate.js";
 
-import validateEdit from "../middlewares/ValidateEdit.js";
+import EmergencyUnit from "../models/EmergencyUnit.js";
 
-incidentRouter.post("/incident",userAuth ,(req,res)=>{
+incidentRouter.post("/incident",userAuth ,async (req,res)=>{
     try{
        
-        validate(req.body)
+        
         
         const incident=new Incident({
             title:req.body.title,
@@ -65,19 +65,50 @@ incidentRouter.get("/incident/my" ,userAuth ,async (req,res)=>{
     }
 })
 
-incidentRouter.patch("/incident/:id",userAuth ,(req,res)=>{
-    try{
-      
-        const updatefield=req.body;
-        const incident=await Incident.findByIdAndUpdate(req.params.id,updatefield,{new:true})
+incidentRouter.patch("/incident/:id", userAuth, async (req, res) => {
+    try {
 
-        res.status(200).json({message:'incident updated',incident})
+        const updatefield = req.body;
+
+        const incident = await Incident.findByIdAndUpdate(
+            req.params.id,
+            updatefield,
+            { new: true }
+        );
+
+        if (updatefield.assignedUnit) {
+            await EmergencyUnit.findByIdAndUpdate(
+                updatefield.assignedUnit,
+                {
+                    status: "Busy"
+                }
+            );
+        }
+
+        if (
+            (updatefield.status === "Resolved" ||
+             updatefield.status === "Closed") &&
+            incident.assignedUnit
+        ) {
+            await EmergencyUnit.findByIdAndUpdate(
+                incident.assignedUnit,
+                {
+                    status: "Available"
+                }
+            );
+        }
+
+        res.status(200).json({
+            message: "Incident updated successfully",
+            incident
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
     }
-    catch(err)
-    {
-        res.status(500).json({message:err.message})
-    }
-})
+});
 
 incidentRouter.delete("/incident/:id",userAuth ,async (req,res)=>{
     try{
@@ -89,3 +120,5 @@ incidentRouter.delete("/incident/:id",userAuth ,async (req,res)=>{
         res.status(500).json({message:err.message})
     }
 })  
+
+export default incidentRouter

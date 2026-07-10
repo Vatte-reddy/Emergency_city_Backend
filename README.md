@@ -7,3 +7,5 @@ Day-3 writing authrouters with production level logic using cookies,jwt tokens,a
 Day-4 using bcrypt to protect password and mongoo db integration
 
 Day-5 creating incident API's for starting,updating,deleteing and to view for user who is logged in 
+
+Day- 6 and Day-7 building emergencyUnit file and updating and patching and delete
